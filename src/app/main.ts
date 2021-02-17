@@ -9,6 +9,7 @@ import { cleanUpAppCache, createAppCacheFile } from './app-cache-handler';
 import { autoLaunchInstance } from './auto-launch-controller';
 import { setChromeFlags, setSessionProperties } from './chrome-flags';
 import { config } from './config-handler';
+import * as cookieHandler from './cookies';
 import './dialog-handler';
 import './main-api-handler';
 import { handlePerformanceSettings } from './perf-handler';
@@ -86,6 +87,7 @@ const startApplication = async () => {
     }
   }
   await app.whenReady();
+  cookieHandler.handleCookies();
   if (oneStart) {
     return;
   }

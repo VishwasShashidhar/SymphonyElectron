@@ -14,7 +14,6 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 import { format, parse } from 'url';
-import * as cookieHandler from './cookies';
 
 import { apiName, Themes, WindowTypes } from '../common/api-interface';
 import {
@@ -94,8 +93,6 @@ let DEFAULT_HEIGHT: number = 900;
 
 // Timeout on restarting SDA in case it's stuck
 const LISTEN_TIMEOUT: number = 25 * 1000;
-
-cookieHandler.handleCookies();
 
 export class WindowHandler {
   /**
