@@ -9,12 +9,12 @@ import {
   globalShortcut,
   ipcMain,
   screen,
-  session,
   shell,
 } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 import { format, parse } from 'url';
+import * as cookieHandler from './cookies';
 
 import { apiName, Themes, WindowTypes } from '../common/api-interface';
 import {
@@ -94,6 +94,8 @@ let DEFAULT_HEIGHT: number = 900;
 
 // Timeout on restarting SDA in case it's stuck
 const LISTEN_TIMEOUT: number = 25 * 1000;
+
+cookieHandler.handleCookies();
 
 export class WindowHandler {
   /**
@@ -250,26 +252,6 @@ export class WindowHandler {
       'window-handler: createApplication mainWinPos: ' +
         JSON.stringify(this.config.mainWinPos),
     );
-
-    const cookies = session.defaultSession.cookies;
-    cookies.on('changed', async (_event, cookie, _cause, removed) => {
-      if (cookie.session && !removed) {
-        const url = `${cookie.secure ? 'https' : 'http'}://${cookie.domain}${
-          cookie.path
-        }`;
-        logger.info(`Persisting cookies for ${url}`);
-        await cookies.set({
-          url,
-          name: cookie.name,
-          value: cookie.value,
-          domain: cookie.domain,
-          path: cookie.path,
-          secure: cookie.secure,
-          httpOnly: cookie.httpOnly,
-          expirationDate: Math.floor(new Date().getTime() / 1000) + 1209600,
-        });
-      }
-    });
 
     let { isFullScreen, isMaximized } = this.config.mainWinPos
       ? this.config.mainWinPos
