@@ -9,6 +9,7 @@ import {
   globalShortcut,
   ipcMain,
   screen,
+  session,
   shell,
 } from 'electron';
 import * as fs from 'fs';
@@ -249,6 +250,26 @@ export class WindowHandler {
       'window-handler: createApplication mainWinPos: ' +
         JSON.stringify(this.config.mainWinPos),
     );
+
+    const cookies = session.defaultSession.cookies;
+    cookies.on('changed', async (_event, cookie, _cause, removed) => {
+      if (cookie.session && !removed) {
+        const url = `${
+          !cookie.httpOnly && cookie.secure ? 'https' : 'http'
+        }://${cookie.domain}${cookie.path}`;
+        logger.info(`Persisting cookies for ${url}`);
+        await cookies.set({
+          url,
+          name: cookie.name,
+          value: cookie.value,
+          domain: cookie.domain,
+          path: cookie.path,
+          secure: cookie.secure,
+          httpOnly: cookie.httpOnly,
+          expirationDate: Math.floor(new Date().getTime() / 1000) + 1209600,
+        });
+      }
+    });
 
     let { isFullScreen, isMaximized } = this.config.mainWinPos
       ? this.config.mainWinPos
