@@ -196,6 +196,7 @@ export class WindowHandler {
         },
         {
           preload: path.join(__dirname, '../renderer/_preload-main.js'),
+          partition: 'persist:symphony',
         },
       ),
       ...opts,

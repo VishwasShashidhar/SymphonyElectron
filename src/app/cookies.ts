@@ -1,9 +1,8 @@
 import * as electron from 'electron';
 import { logger } from '../common/logger';
 
-const cookies = electron.session.defaultSession.cookies;
-
 export const handleCookies = (): void => {
+  const cookies = electron.session.defaultSession.cookies;
   cookies.on('changed', async (_event, cookie, _cause, removed) => {
     if (cookie.session && !removed) {
       const url = `${cookie.secure ? 'https' : 'http'}://${cookie.domain}${
