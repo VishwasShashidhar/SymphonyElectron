@@ -254,9 +254,9 @@ export class WindowHandler {
     const cookies = session.defaultSession.cookies;
     cookies.on('changed', async (_event, cookie, _cause, removed) => {
       if (cookie.session && !removed) {
-        const url = `${
-          !cookie.httpOnly && cookie.secure ? 'https' : 'http'
-        }://${cookie.domain}${cookie.path}`;
+        const url = `${cookie.secure ? 'https' : 'http'}://${cookie.domain}${
+          cookie.path
+        }`;
         logger.info(`Persisting cookies for ${url}`);
         await cookies.set({
           url,
